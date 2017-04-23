@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>CAVE DIVER</title>
+        <link rel="stylesheet" href="assets/css/style.css">
+        <link href="https://fonts.googleapis.com/css?family=Bungee" rel="stylesheet">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script> 
+        
+
+        <script>
+            $(document).ready(function(){
+
+                //scrolls to top on refresh
+                $('html, body').animate({
+                    scrollTop: $("#title_section").offset().top
+                }, 50);
+
+                var lost = false;
+                var score = 0;
+                var str = "";
+                $('#gameOver_img').hide();
+                $('#title_img').hide();
+                $('#score_display').hide();
+                $('#restart_button').hide();
+
+                setTimeout(function() {
+                    $('#title_img').fadeIn();
+                }, 100);
+        
+                //refresh page on restart
+                $("#restart_button").click(function() {
+                    location.reload();
+                });
+                
+                //start button
+                $("#start_bttn").click(function() {
+                    //scroll to game section
+                    $('html, body').animate({
+                        scrollTop: $("#game_section").offset().top
+                    }, 1000);
+
+                    var speed = 100;          //speed of blocks
+                    var timer = new Date;     //score is kept by # seconds
+
+
+                    //if mouse goes onto safe blocks -- game over
+                    $('.cave_wall').hover(function() {
+
+                        console.log('lost');
+                        lost = true;        
+                        $("#score_display").text(str);   //shows score on game over screen
+
+                        //scroll to game over section
+                        $('html, body').animate({
+                            scrollTop: $("#gameOver_section").offset().top
+                        }, 1000);
+
+                        setTimeout(function() {
+                            $('#gameOver_img').fadeIn();
+                        }, 700);
+
+                        setTimeout(function() {
+                            $('#score_display').fadeIn();
+                        }, 1000);
+
+                        setTimeout(function() {
+                            $('#restart_button').fadeIn();
+                        }, 1300);
+                    });
+
+                    /*
+                        There are nine safe blocks that slide upward. 
+                        Once they slide up far enough, they are placed back at the bottom.
+                        Each block is placed 100px to the left or right of the blokc above them (random).
+                    */
+
+                    this.iid = setInterval(looper , speed);
+                    function looper() {
+
+                        //Stop game if lost
+                        if (lost) {
+                            return false;
+                        }
+
+                        //score = seconds
+                        str = "score: " + score;
+                        $("#curr_score").text(str);
+                        score = Math.floor((new Date - timer) / 1000);
+                        console.log(score);
+                        
+                        //randomly chooses if block is placed to the left, right, or under prev block
+                        var leftright = Math.floor(Math.random() * 5)+1;
+                        var shift = 0;
+                        if (leftright == 1 || leftright == 2) { shift += 100; } //shifted right 100px
+                        else if (leftright == 3 || leftright == 4) { shift -= 100;} //shifted left 100px
+                        else {shift = 0;}
+
+
+
+
+                        //block 1
+                        var currPos1 = parseInt($('#cb1').css('margin-top').replace("px", ""));     //current top int
+                        var shiftAmt1 = parseInt($('#cb9').css('margin-left').replace("px", ""));   //current left int
+                        //makes sure blocks don't go off screen
+                        if (shiftAmt1 >= 700 ) {shiftAmt1-=100}
+                        else if (shiftAmt1 <= -700) {shiftAmt1+=100}
+                        else {shiftAmt1 += shift}
+                        //if block slides up far enough, move back to bottom and apply shift amount
+                        if (currPos1 <= -200) {
+                            $('#cb1').css('margin-top', 1000 + "px");
+                            $('#cb1').css('margin-left', shiftAmt1 + "px");
+                        } else {                            //sliding animation
+                            $('#cb1').animate({
+                                'marginTop' : "-=200px"
+                            }, speed, "linear");
+                        }
+
+                        //block 2
+                        var currPos2 = parseInt($('#cb2').css('margin-top').replace("px", ""));
+                        var shiftAmt2 = parseInt($('#cb1').css('margin-left').replace("px", ""));
+                        if (shiftAmt2 >= 700 ) {shiftAmt2-=100}
+                        else if (shiftAmt2 <= -700) {shiftAmt2+=100}
+                        else {shiftAmt2 +=shift}
+                        if (currPos2 <= -200) {
+                            $('#cb2').css('margin-top', 1000 + "px");
+                            $('#cb2').css('margin-left', shiftAmt2 + "px");
+                        } else {
+                            $('#cb2').animate({
+                                'marginTop' : "-=200px"
+                            }, speed, "linear");
+                        }
+
+                        //block 3
+                        var currPos3 = parseInt($('#cb3').css('margin-top').replace("px", ""));
+                        var shiftAmt3 = parseInt($('#cb2').css('margin-left').replace("px", ""));
+                        if (shiftAmt3 >= 700 ) {shiftAmt3-=100}
+                        else if (shiftAmt3 <= -700) {shiftAmt3+=100}
+                        else {shiftAmt3 +=shift}
+                        if (currPos3 <= -200) {
+                            $('#cb3').css('margin-top', 1000 + "px");
+                            $('#cb3').css('margin-left', shiftAmt3 + "px");
+                        } else {
+                            $('#cb3').animate({
+                                'marginTop' : "-=200px"
+                            }, speed, "linear");
+                        }
+
+                        //block 4
+                        var currPos4 = parseInt($('#cb4').css('margin-top').replace("px", ""));
+                        var shiftAmt4 = parseInt($('#cb3').css('margin-left').replace("px", ""));
+                        if (shiftAmt4 >= 700 ) {shiftAmt4-=100}
+                        else if (shiftAmt4 <= -700) {shiftAmt4+=100}
+                        else {shiftAmt4 +=shift}
+                        if (currPos4 <= -200) {
+                            $('#cb4').css('margin-top', 1000 + "px");
+                            $('#cb4').css('margin-left', shiftAmt4 + "px");
+                        } else {
+                            $('#cb4').animate({
+                                'marginTop' : "-=200px"
+                            }, speed, "linear");
+                        }
+
+                        //block 5
+                        var currPos5 = parseInt($('#cb5').css('margin-top').replace("px", ""));
+                        var shiftAmt5 = parseInt($('#cb4').css('margin-left').replace("px", ""));
+                        if (shiftAmt5 >= 700 ) {shiftAmt5-=100}
+                        else if (shiftAmt5 <= -700) {shiftAmt5+=100}
+                        else {shiftAmt5 +=shift}
+                        if (currPos5 <= -200) {
+                            $('#cb5').css('margin-top', 1000 + "px");
+                            $('#cb5').css('margin-left', shiftAmt5 + "px");
+                        } else {
+                            $('#cb5').animate({
+                                'marginTop' : "-=200px"
+                            }, speed, "linear");
+                        }
+
+                        //block 6
+                        var currPos6 = parseInt($('#cb6').css('margin-top').replace("px", ""));
+                        var shiftAmt6 = parseInt($('#cb5').css('margin-left').replace("px", ""));
+                        if (shiftAmt6 >= 700 ) {shiftAmt6-=100}
+                        else if (shiftAmt6 <= -700) {shiftAmt6+=100}
+                        else {shiftAmt6 +=shift}
+                        if (currPos6 <= -200) {
+                            $('#cb6').css('margin-top', 1000 + "px");
+                            $('#cb6').css('margin-left', shiftAmt6 + "px");
+                        } else {
+                            $('#cb6').animate({
+                                'marginTop' : "-=200px"
+                            }, speed, "linear");
+                        }
+
+                        //block 7
+                        var currPos7 = parseInt($('#cb7').css('margin-top').replace("px", ""));
+                        var shiftAmt7 = parseInt($('#cb6').css('margin-left').replace("px", ""));
+                        if (shiftAmt7 >= 700 ) {shiftAmt7-=100}
+                        else if (shiftAmt7 <= -700) {shiftAmt7+=100}
+                        else {shiftAmt7 +=shift}
+                        if (currPos7 <= -200) {
+                            $('#cb7').css('margin-top', 1000 + "px");
+                            $('#cb7').css('margin-left', shiftAmt7 + "px");
+                        } else {
+                            $('#cb7').animate({
+                                'marginTop' : "-=200px"
+                            }, speed, "linear");
+                        }
+
+                        //block 8
+                        var currPos8 = parseInt($('#cb8').css('margin-top').replace("px", ""));
+                        var shiftAmt8 = parseInt($('#cb7').css('margin-left').replace("px", ""));
+                        if (shiftAmt8 >= 700 ) {shiftAmt8-=100}
+                        else if (shiftAmt8 <= -700) {shiftAmt8+=100}
+                        else {shiftAmt8 +=shift}
+                        if (currPos8 <= -200) {
+                            $('#cb8').css('margin-top', 1000 + "px");
+                            $('#cb8').css('margin-left', shiftAmt8 + "px");
+                        } else {
+                            $('#cb8').animate({
+                                'marginTop' : "-=200px"
+                            }, speed, "linear");
+                        }
+
+                        //block 9
+                        var currPos9 = parseInt($('#cb9').css('margin-top').replace("px", ""));
+                        var shiftAmt9 = parseInt($('#cb8').css('margin-left').replace("px", ""));
+                        if (shiftAmt9 >= 700 ) {shiftAmt9-=100}
+                        else if (shiftAmt9 <= -700) {shiftAmt9+=100}
+                        else {shiftAmt9 +=shift}
+                        if (currPos9 <= -200) {
+                            $('#cb9').css('margin-top', 1000 + "px");
+                            $('#cb9').css('margin-left', shiftAmt9 + "px");
+                        } else {
+                            $('#cb9').animate({
+                                'marginTop' : "-=200px"
+                            }, speed, "linear");
+                        }
+                    }
+                });
+            });
+        </script>
+       
+
+    </head>
+
+    <body>
+            <section class = "section" id = "title_section"> 
+               <img id="title_img" src="assets/img/TITLE.png">
+               <div class="sky" id="sky1"></div>
+               <div class="sky" id="sky2"></div>
+               <div class="sky" id="sky3"></div>
+               <div class="sky" id="sky4"></div>
+               <div id="start_bttn" class = "button">DIVE IN! </div>
+               <div class="cave_block" id="title_cb"></div>
+               <div id="title_cavewall"></div>
+               
+
+            </section>
+
+
+            <section class = "section" id = "game_section">
+                <div class="cave_wall"></div>
+                <div id="curr_score"></div>
+
+                <div class="cave_block" id="cb1"></div>
+                <div class="cave_block" id="cb2"></div>
+                <div class="cave_block" id="cb3"></div>
+                <div class="cave_block" id="cb4"></div>
+                <div class="cave_block" id="cb5"></div>
+                <div class="cave_block" id="cb6"></div>
+                <div class="cave_block" id="cb7"></div>
+                <div class="cave_block" id="cb8"></div>
+                <div class="cave_block" id="cb9"></div>
+            </section>
+
+
+            <section class = "section" id = "gameOver_section">
+                <img id="gameOver_img" src="assets/img/game_over.png">
+                <div id="score_display"> </div>
+                <div id="restart_button" class="button">RESTART? </div>
+            </section>
+    </body>
+</html>
